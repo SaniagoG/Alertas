@@ -1,0 +1,58 @@
+
+<ion-header no-border>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon class="menu-boton">
+        <span class="bar animated slideInLeft"></span>
+      </ion-icon>
+    </button>
+    <ion-title>{{ lang? lang[current_lang].agenda : ''}}</ion-title>
+    <ion-buttons end>
+      <button ion-button >
+        <ion-icon class="filtro-boton">
+          <span class="bar"></span>
+        </ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-toolbar no-padding>
+    <ion-grid no-padding class="animated fadeInDown a1">
+      <ion-row>
+        <ion-col col-3>
+          <p text-center>{{ lang? lang[current_lang].date : ''}}<p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div id="loader-wrapper" *ngIf="assignments?.length == 0 && !flag_end">
+        <div id="loader"></div>
+    </div>
+    <!-- mensaje cuando no hay datos en la agenda -->
+    <h3 text-center class="animated fadeInUp a15" *ngIf="assignments?.length == 0 && flag_end">{{ lang? lang[current_lang].wa_nothing_to_show : ''}}</h3>
+    <!-- /mensaje cuando no hay datos en la agenda -->
+  <ion-grid no-padding *ngFor="let date of assignments" class="animated fadeInUp a15">
+
+      <ion-row>
+        <ion-col col-3 text-center class="fecha on">
+          <h2>{{getMonth(date.key)}}</h2>
+          <h1>{{getDayNumber(date.key)}}</h1>
+          <h3>{{getDay(date.key)}}</h3>
+        </ion-col>
+      <ion-col col-9 class="actividades-agenda">
+        <ion-list class="{{actividad.assignment.score=='' ? colors[actividad.assignment.type_id] : 'finalizada'}}" *ngFor="let actividad of date.value">
+            <p>{{getTypeAssignment(actividad.assignment.type_id)?.name}}<span float-end>{{actividad.course?.full_name}}</span></p>
+            <div class="actividad">
+              <h2>{{actividad.assignment.title}}</h2>
+              <span>{{capitalize(actividad.assignment.description)}}</span>
+            </div>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-infinite-scroll (ionInfinite)="getMoreAssignments($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
